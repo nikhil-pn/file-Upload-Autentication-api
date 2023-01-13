@@ -1,5 +1,5 @@
 const express = require("express");
-console.log("reached here");
+const jwt = require("jsonwebtoken");
 const brcypt = require("bcrypt");
 const router = express.Router();
 const User = require("../models/userModels");
@@ -54,10 +54,36 @@ router.post("/signup", async (req, res) => {
 
 router.post("/signin", async (req, res) => {
   try {
-    const { name } = req.body;
-    return res.status(200).json({ result: name });
+    const { email, password } = req.body;
+    if (email.length === 0) {
+      return res.status(400).json({ err: "Please provide email" });
+    }
+    if (password.length === 0) {
+      return res.status(400).json({ err: "Please provide password" });
+    }
+    const existigUser = await User.findOne({
+      where: { email },
+    });
+    if (!existigUser) {
+      return res.status(404).json({ err: "User not found" });
+    }
+    const passwordMatch = await brcypt.compare(password, existigUser.password);
+
+    if (!passwordMatch) {
+      return res.status(400).json({ err: "Password error" });
+    }
+    const payload = { user: { id: existigUser.id } };
+    const bearerToken =  jwt.sign(payload, "SECERT MESSAGGE", {
+      expiresIn: 360000,
+    });
+
+    res.cookie("t", bearerToken, { expire: new Date() + 9999 });
+
+    return res.status(200).json({
+      bearerToken
+    });
+
   } catch (error) {
-    console.log("kdjfka");
     return res.status(500).send(error);
   }
 });
