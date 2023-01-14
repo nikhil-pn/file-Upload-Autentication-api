@@ -1,24 +1,24 @@
-const {Sequelize} = require("sequelize")
+const { Sequelize } = require("sequelize");
 
-const createDB = new Sequelize("fileUpload-db", "nikhilpn", "pass-7",{
-    dialect: "sqlite",
-    host: "./config/db.sqlite"
+const createDB = new Sequelize("fileUpload-db", "nikhilpn", "pass-7", {
+  dialect: "sqlite",
+  host: "./config/db.sqlite",
 });
 
-
-const connectDB = ()=>{
-    createDB.sync().then(()=>{
-        console.log("Connected to DB");
+const connectDB = () => {
+  createDB
+    .sync()
+    .then(() => {
+      console.log("Connected to DB");
     })
-    .catch((e)=>{
-        console.log("Db connection failed hard");
-    })
-}
-const userModel = require("../models/userModels")
-const orderModel = require("../models/orderModels")
+    .catch((e) => {
+      console.log("Db connection failed hard");
+    });
+};
+module.exports = { createDB, connectDB };
 
-orderModel.belongsTo(userModel, {foreignKey: "buyerId"})
-userModel.hasMany(orderModel, {foreignKey : "id"});
+const userModel = require("../models/userModels");
+const orderModel = require("../models/orderModels");
 
-
-module.exports = {createDB, connectDB}
+orderModel.belongsTo(userModel, { foreignKey: "buyerId" });
+userModel.hasMany(orderModel, { foreignKey: "id" });

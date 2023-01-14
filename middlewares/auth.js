@@ -30,7 +30,7 @@ const isAuthenticated = async (req, res, next) => {
 };
 
 const isSeller = async (req, res, next) => {
-    if(req.user.dataValues.isSeller){
+    if(req.user.isSeller){
         next()
     }else{
         return res.status(401).json({
@@ -40,7 +40,7 @@ const isSeller = async (req, res, next) => {
 
 };
 const isBuyer = async (req, res, next) => {
-  if(!req.user.dataValues.isSeller){
+  if(!req.user.isSeller){
       next()
   }else{
       return res.status(401).json({
