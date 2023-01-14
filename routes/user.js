@@ -73,19 +73,27 @@ router.post("/signin", async (req, res) => {
       return res.status(400).json({ err: "Password error" });
     }
     const payload = { user: { id: existigUser.id } };
-    const bearerToken =  jwt.sign(payload, "SECERT MESSAGGE", {
+    const bearerToken = jwt.sign(payload, "SECERT MESSAGGE", {
       expiresIn: 360000,
     });
 
     res.cookie("t", bearerToken, { expire: new Date() + 9999 });
 
     return res.status(200).json({
-      bearerToken
+      bearerToken,
     });
-
   } catch (error) {
     return res.status(500).send(error);
   }
 });
+
+router.get('signout', async (req, res)=>{
+  try {
+    res.clearCookie('t')
+    return res.status(200).json({message: "cookie deleted signOut"})
+  } catch (error) {
+    res.status(500).send(error)
+  }
+})
 
 module.exports = router;
