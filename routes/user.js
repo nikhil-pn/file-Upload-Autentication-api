@@ -87,10 +87,10 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.get('signout', async (req, res)=>{
+router.get('logout', async (req, res)=>{
   try {
     res.clearCookie('t')
-    return res.status(200).json({message: "cookie deleted signOut"})
+    return res.status(200).json({message: "cookie deleted logout"})
   } catch (error) {
     res.status(500).send(error)
   }
